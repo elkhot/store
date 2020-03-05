@@ -1,0 +1,93 @@
+{% extends 'ar-base.html' %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<body>
+
+  <!--Main layout-->
+  <main>
+    <div class="container">
+
+        <div class="table-responsive text-nowrap">
+  <h1>ملخص الطلب<span class="badge badge-primary"></span></h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">اسم المنتج</th>
+        <th scope="col">سعر المنتج</th>
+        <th scope="col">الكميه</th>
+        <th scope="col">سعر المنتج الكلى</th>
+      </tr>
+    </thead>
+    <tbody>
+
+        {% for order_item in object.items.all %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+            <td><span class="badge badge-success">{{ order_item.item.title }}</span></td>
+            <td><span class="badge badge-light">{{ order_item.item.price }}ج.م</span></td>
+        <td>
+            <a href="{% url 'core:ar-add-item-to-cart' slug=order_item.item.slug %}"><i class="fas fa-plus ml-2"></i></a>
+            {{ order_item.quantity }}
+            <a href="{% url 'core:ar-remove-item-from-cart' slug=order_item.item.slug %}"><i class="fas fa-minus mr-2"></i></a>
+        </td>
+        <td>
+          {% if order_item.item.discount_price %}
+
+          {{ order_item.get_total_discount_item_price }}ج.م
+            <span class="badge badge-dark">توفير {{ order_item.get_amount_saved }} ج.م</span>
+          {% else %}
+
+          {{ order_item.get_total_item_price }}ج.م
+
+          {% endif %}
+        </td>
+            <td>
+                <a style="color: red;"  href="{% url 'core:ar-remove-all-from-cart' order_item.item.slug %}"><i class="fas fa-trash float-right"></i></sa>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4"> <span class="badge badge-danger">العربه فارغه</span></td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <a class="btn btn-primary float-right" href="/ar/"><b>تسوق</b></a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>{% if object.coupon %}
+
+        <td colspan="4"><b>coupon</b></td>
+        <td><b>{{ object.coupon.amount }}ج.م</b></td>
+
+        {% endif %}</tr>
+    <tr>
+        {% if object.get_total_price %}
+        <td colspan="4"><b>اجمالى السعر</b></td>
+        <td><span class="badge badge-primary">{{ object.get_total_price }}ج.م</span></td>
+    </tr>
+    <td colspan="5">
+        <a class="btn btn-warning float-right ml-2"href="/ar/checkout/"><b>اتمام عملية الشراء</b></a>
+        <a class="btn btn-primary float-right" href="/a/"><b>تســـوق</b></a>
+    </td>
+    {% endif %}
+    </tbody>
+  </table>
+
+</div>
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+</body>
+
+</html>
+
+{% endblock content %}

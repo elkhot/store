@@ -1,0 +1,28 @@
+{% extends 'ar-base.html' %}
+{% load static %}
+{% block content %}
+<label class="btn btn-primary"> تأكد من معلومات الشحن كما يمكنك الرجوع للخلف للتصحيح:</label>
+
+
+                        {% for order_item in object.items.all %}
+                       <li>User name: {{ order_item.user }}.</li>
+                       <li>Item names: {{ order_item.item.title }}.</li>
+                     <li>Item image: <img src="{{ order_item.item.image.url }}"</li>
+                       <li>Item quantity: {{ order_item.quantity }}.</li>
+                           {% if order_item.item.discount_price %}
+
+                               <li>Total item price: {{ order_item.get_total_discount_item_price }}EGP</li>
+                                        <span class="badge badge-primary">saving {{ order_item.get_amount_saved }}EGP</span>
+                                      {% else %}
+
+                               <li>Total item price: {{ order_item.get_total_item_price }}EGP</li>
+
+                              {% endif %}
+                            <li>Deliver to the indicated shipping address:<a href="{% url 'core:ar-deliver-from-cart' slug=order_item.item.slug %}"><i class="fas fa-truck ml-2"></i></a></li>
+
+                        {% endfor %}
+                       <li>Total price: {{ object.get_total_price }}EGP</li>
+
+               <button class="" type="submit" Place an order ></button>
+          </form>
+      {% endblock %}

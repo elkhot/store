@@ -1,0 +1,307 @@
+{% extends "en-base.html" %}
+{% block extra_head %}
+<style>
+
+#stripeBtnLabel {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 20px;
+  font-variant: normal;
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+#stripeBtn {
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  text-decoration: none;
+  color: #fff;
+  background: #32325d;
+  white-space: nowrap;
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 14px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-decoration: none;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+  float: left;
+  margin-left: 12px;
+  margin-top: 28px;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, .10), 0 3px 6px rgba(0, 0, 0, .08);
+  background-color: #43458b;
+}
+
+#PaymentForm {
+  padding: 0;
+  height: 0;
+}
+
+label {
+  font-weight: 500;
+  font-size: 15px;
+  display: block;
+}
+
+#card-errors {
+  height: 20px;
+  padding: 4px 0;
+  color: #fa755a;
+}
+
+.stripe-form-row {
+  width: 70%;
+  float: left;
+  height: 124px;
+
+}
+
+.stripe-form-row input {
+  height: 40px;
+  width: 40%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  color: grey;
+}
+
+/**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+ .StripeElementLabel {
+ padding: 0;
+ font-size: 14px;
+ color: blue;
+ }
+.StripeElement {
+  box-sizing: border-box;
+
+  height: 40px;
+
+  padding: 10px 12px;
+
+  border: 1px solid silver;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 11px;
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+</style>
+
+{% endblock extra_head %}
+{% block content %}
+
+  <!--Main layout-->  <main >
+    <div class="container wow fadeIn">
+      <h2 class="my-5 h2 text-center">Payment form</h2>
+      <div class="row">
+        <div class="col-md-8 mb-4">
+          <div class="card">
+            <form  action="." method="POST" class="card-body">
+              {% csrf_token %}
+
+              <h3><span class="badge badge-primary">Payment with credit card</span> </h3>
+
+
+               <span class="badge badge-light">Card number</span>
+                <div class="input-group mb-3">
+                    <label for="cardNumber">Card number</label>
+                    <input type='text' placeholder='card number' id='cardNumber' name='card-number' class='form-control' required>
+                    <div class="invalid-feedback">
+                      Please provide a valid card number
+                    </div>
+                </div>
+
+                <span class="badge badge-light">Card Expiry</span>
+                <div class="input-group mb-3">
+                    <label for="cardExpiry">Valid till</label>
+                 <input type="text" class="form-control" id="cardExpiry" name="card-expiry" placeholder="mm/yy" required>
+                  <div class="invalid-feedback">
+                      Please provide a valid expiry date
+                  </div>
+                 </div>
+
+                <span class="badge badge-light">Security number</span>
+                <div class="input-group mb-3">
+                    <label for="cardCvc">Security code</label>
+                  <input type='text' placeholder='cvc' id='cardCvc' name='card-cvc' class='form-control' required>
+                    <div class="invalid-feedback">
+                        Please provide a valid cvc
+                    </div>
+                </div>
+
+
+
+                <span class="badge badge-light">Zip code</span>
+                <div class="input-group mb-3">
+                    <label for="zipCode">Postal code</label>
+                  <input type='text' placeholder='Zip code' id='zipCode' name='zip-code' class='form-control' required>
+                    <div class="invalid-feedback">
+                        Please provide a valid zip
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+    <!-- Used to display form errors. -->
+              <div id="card-errors" role="alert"></div>
+
+                <div class="stripe-form-row">
+                    <button id="stripeBtn">Pay!</button>
+                </div>
+          </form>
+
+<!--!<div class="stripe-form-row">
+                  <button class="SubmitButton SubmitButton--incomplete" id="stripeBtn" type="submit" style="background-color: rgb(61, 61, 78); color: rgb(255, 255, 255); width: 100px; height: 50px;"><div class="SubmitButton-TextContainer"><span class="SubmitButton-Text SubmitButton-Text--current Text Text-fontWeight--500 Text--truncate"><span>Pay <span>$20.00</span></span></span></div></button>
+              </div>-->
+      <div class="col-md-16 mb-4">
+          {% include "order_snippet.html" %}
+          {% include "en_address_snippet.html" %}
+      </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script type="text/javascript" nonce="">  // Create a Stripe client.
+  var stripe = Stripe('pk_test_XIkEi7uiUwtCIjdXShReMZ1e00kRB6lXjg');
+
+  // Create an instance of Elements.
+  var elements = stripe.elements();
+
+  // Custom styling can be passed to options when creating an Element.
+  // (Note that this demo uses a wider set of styles than the guide below.)
+  var style = {
+    base: {
+      color: '#32325d',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: '#aab7c4'
+      }
+    },
+    invalid: {
+      color: '#fa755a',
+      iconColor: '#fa755a'
+    }
+  };
+
+  // Create an instance of the card Element.
+  //var card = elements.create('card', {style: style});
+  //cardNumber
+  var number = elements.create('card-number', {
+  'placeholder': '',
+  'style':style});
+  number.mount('#cardNumber')
+  //cardExpiry
+  var exp = elements.create('card-expiry',{
+  'placeholder': '',
+  'style': style});
+  exp.mount('cardExpiry')
+  //CVC
+  var cvc = ('card-cvc',{
+  placeholder: '',
+  'style': style});
+  cvc.mount('#cardCvc');
+ //Zip
+ var zip = elements.create('zip-code',{
+ 'placeholder': '',
+ 'style': style});
+ zip.mount('#zipCode')
+
+  // Add an instance of the card Element into the `card-element` <div>.
+
+  // Handle real-time validation errors from the card Element.
+  card.addEventListener('change', function(event) {
+    var displayError = document.getElementById('card-errors');
+    if (event.error) {
+      displayError.textContent = event.error.message;
+    } else {
+      displayError.textContent = '';
+    }
+  });
+
+  // Handle form submission.
+  var form = document.getElementById('stripe-form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    stripe.createToken(card).then(function(result) {
+      if (result.error) {
+        // Inform the user if there was an error.
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+      } else {
+        // Send the token to your server.
+        stripeTokenHandler(result.token);
+      }
+    });
+  });
+
+  // Submit the form with the token ID.
+  function stripeTokenHandler(token) {
+    // Insert the token ID into the form so it gets submitted to the server
+    var form = document.getElementById('stripe-form');
+    var hiddenInput = document.createElement('input');
+    hiddenInput.setAttribute('type', 'hidden');
+    hiddenInput.setAttribute('name', 'stripeToken');
+    hiddenInput.setAttribute('value', token.id);
+    form.appendChild(hiddenInput);
+
+    // Submit the form
+    form.submit();
+  }
+  var currentCardForm = $('.current-card-form');
+  var newCardForm = $('.new-card-form');
+  var use_default_card = document.querySelector("input[name=use_default_card]");
+  use_default_card.addEventListener('change', function() {
+    if (this.checked) {
+      newCardForm.hide();
+      currentCardForm.show()
+    } else {
+      newCardForm.show();
+      currentCardForm.hide()
+    }
+  })
+</script>
+
+{% endblock extra_scripts %}

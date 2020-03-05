@@ -1,0 +1,114 @@
+{% extends "en-base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <main >
+    <div class="container wow fadeIn">
+      <h2 class="my-5 h2 text-center">Checkout form</h2>
+      <div class="row">
+        <div class="col-md-8 mb-4">
+          <div class="card">
+            <form method="POST" class="card-body">
+              {% csrf_token %}
+
+              <h3><span class="badge badge-primary">Shipping address</span> </h3>
+
+              <div class='hideable_shipping_form'>
+
+               <span class="badge badge-light">Customer name</span>
+                <div class="input-group mb-3">
+                    <input type='text' placeholder='Name' id='full_name' name='full_name' class='form-control' required>
+                    <div class="invalid-feedback">
+                      Please provide a valid name
+                    </div>
+                </div>
+
+                <span class="badge badge-light">Phone or mobile number</span>
+                <div class="input-group mb-3">
+                 <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="012345678" required>
+                  <div class="invalid-feedback">
+                      Please provide a valid phone number "no +"
+                  </div>
+                 </div>
+
+                <span class="badge badge-light">Email address</span>
+                <div class="input-group mb-3">
+                  <input type='text' placeholder='abc@email.com' id='email_address' name='email_address' class='form-control' />
+                </div>
+
+
+
+                <span class="badge badge-light">Main address</span>
+                <div class="input-group mb-3">
+                 <input type="text" class="form-control" id="shipping_address" name="shipping_address" placeholder="123 Main st." required>
+                  <div class="invalid-feedback">
+                      Please provide a valid address
+                  </div>
+                 </div>
+
+
+                <span class="badge badge-light">Address 2 (optional)</span>
+                <div class="input-group mb-3">
+                  <input type='text' placeholder='Apartment or suite' id='shipping_address2' name='shipping_address2' class='form-control' />
+                </div>
+
+
+                <span class="badge badge-light">Country</span>
+                <div class="row">
+                  <div class="input-group mb-3">
+                    {{ form.shipping_country }}
+                    <div class="invalid-feedback">
+                      Please select a valid country.
+                    </div>
+                  </div>
+                </div>
+
+
+              <!--  <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="set_default_shipping" id="set_default_shipping">
+                  <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
+                </div>
+
+              </div>
+
+          {% if default_shipping_address %}
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping">
+                <label class="custom-control-label" for="use_default_shipping">Use default shipping address: {{ default_shipping_address.street_address|truncatechars:10 }}</label>
+              </div>
+          {% endif %}-->
+
+              <hr>
+
+
+                <h3> <span class="badge badge-primary"> Payment option</span></h3>
+
+              <div class="d-block my-3">
+                {% for value, name in form.fields.en_payment_option.choices %}
+                <div class="custom-control custom-radio">
+                  <input id="{{ name }}" name="en_payment_option" value="{{ value }}" type="radio" class="custom-control-input" required>
+                  <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                </div>
+                {% endfor %}
+              </div>
+
+              <hr class="mb-4">
+              <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+        <div class="col-md-16 mb-4">
+          {% include "order_snippet.html" %}
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+{% endblock content %}
